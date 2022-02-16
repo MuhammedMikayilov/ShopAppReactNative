@@ -75,10 +75,11 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 18,
-    marginVertical: 4,
+    fontFamily: "open-sans-bold",
   },
   price: {
     fontSize: 14,
+    fontFamily: "open-sans-bold",
     color: "#888",
   },
   actions: {
@@ -92,6 +93,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     height: "15%",
     padding: 10,
+    fontFamily: "open-sans-bold",
   },
 });
 
