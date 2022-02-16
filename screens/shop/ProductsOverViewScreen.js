@@ -1,17 +1,27 @@
 import * as React from "react";
-import { FlatList, Text } from "react-native";
+import { FlatList } from "react-native";
 import { useSelector } from "react-redux";
 
-function ProductsOverViewScreen() {
+import ProductItem from "../../components/shop/ProductItem";
+
+const ProductsOverViewScreen = (props) => {
   const products = useSelector((state) => state.products.availableProducts);
   return (
     <FlatList
       data={products}
       keyExtractor={(item) => item.id}
-      renderItem={(itemData) => <Text>{itemData.item.title}</Text>}
+      renderItem={({ item }) => (
+        <ProductItem
+          image={item.imageUrl}
+          title={item.title}
+          price={item.price}
+          onViewDetail={() => {}}
+          onAddToCart={() => {}}
+        />
+      )}
     />
   );
-}
+};
 
 ProductsOverViewScreen.navigationOptions = {
   headerTitle: "All Products",
