@@ -17,7 +17,7 @@ const CartItems = ({ onRemove, quantity, title, amount }) => {
       </View>
 
       <View style={styles.itemData}>
-        <Text style={styles.amount}>{amount}</Text>
+        <Text style={styles.amount}>{amount.toFixed(2)}</Text>
         <TouchableOpacity onPress={onRemove} style={styles.deleteBtn}>
           <Ionicons
             name={Platform.OS === "android" ? "md-trash" : "ios-trash"}

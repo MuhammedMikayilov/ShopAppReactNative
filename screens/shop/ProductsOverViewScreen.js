@@ -1,53 +1,48 @@
 import * as React from "react";
-import { FlatList, Platform } from "react-native";
-import { HeaderButtons, Item } from "react-navigation-header-buttons";
+import { FlatList, Platform, Button } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 
 import ProductItem from "../../components/shop/ProductItem";
 import * as cartActions from "../../store/actions/cart";
-import HeaderButton from "../../components/UI/HeaderButton";
 
 const ProductsOverViewScreen = (props) => {
   const products = useSelector((state) => state.products.availableProducts);
   const dispatch = useDispatch();
+  const [isShowedToast, setShowedToast] = React.useState(false);
+
+  React.useEffect(() => {
+    setShowedToast(false);
+  }, []);
   return (
-    <FlatList
-      data={products}
-      keyExtractor={(item) => item.id}
-      renderItem={({ item }) => (
-        <ProductItem
-          image={item.imageUrl}
-          title={item.title}
-          price={item.price}
-          onViewDetail={() => {
-            props.navigation.navigate("ProductDetail", {
-              productId: item.id,
-              productTitle: item.title,
-            });
-          }}
-          onAddToCart={() => {
-            dispatch(cartActions.addToCart(item));
-          }}
-        />
-      )}
-    />
+    <>
+      <FlatList
+        data={products}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <ProductItem
+            image={item.imageUrl}
+            title={item.title}
+            price={item.price}
+            onViewDetail={() => {
+              props.navigation.navigate("ProductDetail", {
+                productId: item.id,
+                productTitle: item.title,
+              });
+            }}
+            onAddToCart={() => {
+              setShowedToast(true);
+              dispatch(cartActions.addToCart(item));
+            }}
+          />
+        )}
+      />
+    </>
   );
 };
 
-ProductsOverViewScreen.navigationOptions = (navData) => {
+export const screenOptions = (navData) => {
   return {
     headerTitle: "All Products",
-    headerRight: () => (
-      <HeaderButtons HeaderButtonComponent={HeaderButton}>
-        <Item
-          title="Cart"
-          iconName={Platform.OS === "android" ? "md-cart" : "ios-cart"}
-          onPress={() => {
-            navData.navigation.navigate("Cart");
-          }}
-        />
-      </HeaderButtons>
-    ),
   };
 };
 

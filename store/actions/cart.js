@@ -1,9 +1,9 @@
-import { ADD_TO_CART, REMOVE_FROM_CART } from "../constants/carts";
+import { CARTS } from "../constants/carts";
 
 export const addToCart = (product) => {
-  return { type: ADD_TO_CART, product: product };
+  return { type: CARTS.ADD_TO_CART, product: product };
 };
 
 export const removeFromCart = (productId) => {
-  return { type: REMOVE_FROM_CART, pid: productId };
+  return { type: CARTS.REMOVE_FROM_CART, pid: productId };
 };
