@@ -1,8 +1,11 @@
 import { createAppContainer } from "react-navigation";
 import { createStackNavigator } from "react-navigation-stack";
 import { Colors } from "../constants/Colors";
-import ProductsOverViewScreen from "../screens/shop/ProductsOverViewScreen";
 import { Ionicons } from "@expo/vector-icons";
+
+import ProductsOverViewScreen from "../screens/shop/ProductsOverViewScreen";
+import ProductDetailScreen from "../screens/shop/ProductDetailScreen";
+import CartScreen from "../screens/shop/CartScreen";
 
 const defaultNavOptions = {
   headerStyle: {
@@ -14,6 +17,8 @@ const defaultNavOptions = {
 const ProductNavigator = createStackNavigator(
   {
     ProductOverView: ProductsOverViewScreen,
+    ProductDetail: ProductDetailScreen,
+    Cart: CartScreen,
   },
   {
     navigationOptions: {
