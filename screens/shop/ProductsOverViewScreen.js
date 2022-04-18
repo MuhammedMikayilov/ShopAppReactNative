@@ -6,13 +6,14 @@ import ProductItem from "../../components/shop/ProductItem";
 import * as cartActions from "../../store/actions/cart";
 
 const ProductsOverViewScreen = (props) => {
-  const products = useSelector((state) => state.products.availableProducts);
+  const { data: products } = useSelector((state) => state.products);
   const dispatch = useDispatch();
   const [isShowedToast, setShowedToast] = React.useState(false);
 
   React.useEffect(() => {
     setShowedToast(false);
   }, []);
+
   return (
     <>
       <FlatList

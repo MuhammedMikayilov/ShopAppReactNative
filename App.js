@@ -1,7 +1,6 @@
 import * as React from "react";
 import { Provider } from "react-redux";
 import { store } from "./store";
-import { AppLoading } from "expo";
 import ShopNavigator from "./navigators/ShopNavigator";
 import { useFonts } from "expo-font";
 

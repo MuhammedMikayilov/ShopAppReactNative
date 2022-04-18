@@ -4,9 +4,11 @@ import {
   createDrawerNavigator,
   DrawerItemList,
 } from "@react-navigation/drawer";
-import { Platform, SafeAreaView, Button, View } from "react-native";
+import { Platform, SafeAreaView, Button, View, Text } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { NavigationContainer } from "@react-navigation/native";
+import { getAllProducts } from "../store/actions/products";
+import Loading from "../components/UI/Loading";
 
 import ProductsOverviewScreen, {
   screenOptions as productsOverviewScreenOptions,
@@ -21,6 +23,7 @@ import OrdersScreen, {
   screenOptions as ordersScreenOptions,
 } from "../screens/shop/OrdersScreen";
 import { Colors } from "../constants/Colors";
+import { useDispatch, useSelector } from "react-redux";
 
 const defaultNavOptions = {
   headerStyle: {
@@ -76,65 +79,79 @@ export const OrdersNavigator = () => {
 const ShopDrawerNavigator = createDrawerNavigator();
 
 const ShopNavigator = () => {
+  const dispatch = useDispatch();
+  const { isLoading } = useSelector((state) => state.products);
+  const { orders } = useSelector((state) => state.orders);
+
+  React.useEffect(() => {
+    getAllProducts()(dispatch);
+  }, [dispatch]);
   return (
     <NavigationContainer>
-      <ShopDrawerNavigator.Navigator
-        drawerContent={(props) => {
-          return (
-            <View style={{ flex: 1, paddingTop: 20 }}>
-              <SafeAreaView forceInset={{ top: "always", horizontal: "never" }}>
-                <DrawerItemList {...props} />
-                <Button title="Logout" color={Colors.primary} />
-              </SafeAreaView>
-            </View>
-          );
-        }}
-        screenOptions={{
-          activeTintColor: Colors.primary,
-        }}
-      >
-        <ShopDrawerNavigator.Screen
-          name="Products"
-          component={ProductsNavigator}
-          options={{
-            drawerIcon: (props) => (
-              <Ionicons
-                name={Platform.OS === "android" ? "md-home" : "ios-home"}
-                size={23}
-                color={props.color}
-              />
-            ),
+      {isLoading ? (
+        <Loading />
+      ) : (
+        <ShopDrawerNavigator.Navigator
+          drawerContent={(props) => {
+            return (
+              <View style={{ flex: 1, paddingTop: 20 }}>
+                <SafeAreaView
+                  forceInset={{ top: "always", horizontal: "never" }}
+                >
+                  <DrawerItemList {...props} />
+                  <Button title="Logout" color={Colors.primary} />
+                </SafeAreaView>
+              </View>
+            );
           }}
-        />
-        <ShopDrawerNavigator.Screen
-          name="Orders"
-          component={OrdersScreen}
-          options={{
-            drawerIcon: (props) => (
-              <Ionicons
-                name={Platform.OS === "android" ? "md-list" : "ios-list"}
-                size={23}
-                color={props.color}
-              />
-            ),
+          screenOptions={{
+            activeTintColor: Colors.primary,
           }}
-        />
-        <ShopDrawerNavigator.Screen
-          name="Cart"
-          component={CartScreen}
-          options={cartScreenOptions}
-          // component={OrdersNavigator}
-          options={{
-            drawerIcon: (props) => (
-              <Ionicons
-                name={Platform.OS === "android" ? "md-cart" : "ios-cart"}
-                size={23}
-                color={props.color}
-              />
-            ),
-          }}
-        />
-      </ShopDrawerNavigator.Navigator>
+        >
+          <ShopDrawerNavigator.Screen
+            name="Products"
+            component={ProductsNavigator}
+            options={{
+              drawerIcon: (props) => (
+                <Ionicons
+                  name={Platform.OS === "android" ? "md-home" : "ios-home"}
+                  size={23}
+                  color={props.color}
+                />
+              ),
+            }}
+          />
+
+          <ShopDrawerNavigator.Screen
+            name="Orders"
+            component={OrdersScreen}
+            options={{
+              drawerIcon: (props) => (
+                <Ionicons
+                  name={Platform.OS === "android" ? "md-list" : "ios-list"}
+                  size={23}
+                  color={props.color}
+                />
+              ),
+            }}
+          />
+          <ShopDrawerNavigator.Screen
+            name="Cart"
+            component={CartScreen}
+            // options={cartScreenOptions}
+            // component={OrdersNavigator}
+            options={{
+              drawerIcon: (props) => (
+                <Ionicons
+                  name={Platform.OS === "android" ? "md-cart" : "ios-cart"}
+                  size={23}
+                  color={props.color}
+                />
+              ),
+            }}
+          />
+        </ShopDrawerNavigator.Navigator>
+      )}
     </NavigationContainer>
   );
 };

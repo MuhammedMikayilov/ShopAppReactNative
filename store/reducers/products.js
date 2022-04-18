@@ -1,68 +1,67 @@
 import PRODUCTS from "../../data/dummy-data";
 
-import {
-  DELETE_PRODUCT,
-  CREATE_PRODUCT,
-  UPDATE_PRODUCT,
-} from "../constants/products";
+import { ActionTypes } from "../constants/actionTypes";
 import Product from "../../models/product";
 
 const initialState = {
-  availableProducts: PRODUCTS,
-  userProducts: PRODUCTS.filter((prod) => prod.ownerId === "u1"),
+  status: "",
+  data: [] || {},
+  errors: [],
+  isLoading: false,
 };
 
 export const productsReducer = (state = initialState, action) => {
   switch (action.type) {
-    case CREATE_PRODUCT:
-      const newProduct = new Product(
-        new Date().toString(),
-        "u1",
-        action.productData.title,
-        action.productData.imageUrl,
-        action.productData.description,
-        action.productData.price
-      );
+    case `${ActionTypes.GET_PRODUCT}_PENDING`:
       return {
         ...state,
-        availableProducts: state.availableProducts.concat(newProduct),
-        userProducts: state.userProducts.concat(newProduct),
+        status: "PENDING",
+        isLoading: true,
       };
 
-    case UPDATE_PRODUCT:
-      const productIndex = state.userProducts.findIndex(
-        (prod) => prod.id === action.pid
-      );
-      const updatedProduct = new Product(
-        action.pid,
-        state.userProducts[productIndex].ownerId,
-        action.productData.title,
-        action.productData.imageUrl,
-        action.productData.description,
-        state.userProducts[productIndex].price
-      );
-      const updatedUserProducts = [...state.userProducts];
-      updatedUserProducts[productIndex] = updatedProduct;
-      const availableProductIndex = state.availableProducts.findIndex(
-        (prod) => prod.id === action.pid
-      );
-      const updatedAvailableProducts = [...state.availableProducts];
-      updatedAvailableProducts[availableProductIndex] = updatedProduct;
+    case `${ActionTypes.GET_PRODUCT}_SUCCESS`:
       return {
         ...state,
-        availableProducts: updatedAvailableProducts,
-        userProducts: updatedUserProducts,
+        status: "SUCCESS",
+        isLoading: false,
+        data: action.payload,
       };
-    case DELETE_PRODUCT:
+
+    case `${ActionTypes.GET_PRODUCT}_ERROR`:
       return {
         ...state,
-        userProducts: state.userProducts.filter(
-          (product) => product.id !== action.pid
-        ),
-        availableProducts: state.availableProducts.filter(
-          (product) => product.id !== action.pid
-        ),
+        status: "ERROR",
+        isLoading: false,
+        errors: [...action.errors],
       };
+
+    case `${ActionTypes.UPDATE_PRODUCT}_PENDING`:
+      return {
+        ...state,
+        status: "PENDING",
+        isLoading: true,
+      };
+    case `${ActionTypes.UPDATE_PRODUCT}_SUCCESS`:
+      return {
+        ...state,
+        status: "SUCCESS",
+        isLoading: false,
+        data: state.data.map((post) => {
+          if (post.id === action.payload.id) {
+            post = { ...post, ...action.payload };
+          }
+          return post;
+        }),
+      };
+    case `${ActionTypes.UPDATE_PRODUCT}_ERROR`:
+      return {
+        ...state,
+        status: "ERROR",
+        isLoading: false,
+        errors: [action.errors],
+      };
+
+    default:
+      return state;
   }
-  return state;
 };
